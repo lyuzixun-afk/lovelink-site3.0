@@ -1,0 +1,200 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>LoveLink — Smart Dating Platform (Prototype)</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <nav>
+    <div class="inner">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="LoveLink logo"/>
+        <span>LoveLink <span class="badge">Prototype</span></span>
+      </div>
+      <div class="links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#register">Register</a>
+        <a href="#login">Login</a>
+        <a href="#catalog">User Catalog</a>
+        <a href="#match">Matching</a>
+        <a href="#chat">Live Chat</a>
+        <a href="#feedback">Feedback</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section id="view-home" class="view">
+      <div class="grid two">
+        <div class="card">
+          <h1>Welcome to LoveLink</h1>
+          <p>This lightweight prototype shows core features you can demo offline: Registration/Login, User Catalog with filters, a simple Matching system, and a local “Live Chat”. Everything runs entirely in your browser using <span class="kbd">localStorage</span>.</p>
+          <p class="small">Course ready: Home • Register/Login • User Directory • Matching • Live Chat • Feedback & Reviews • About • Contact.</p>
+          <div class="grid two">
+            <button onclick="router.go('#register')">Create account</button>
+            <button class="secondary" onclick="seedDemo()">Seed demo users</button>
+          </div>
+          <p class="small">Data stays in your browser only for demo/school use. Clear via Settings → Clear site data.</p>
+        </div>
+        <div class="card">
+          <h2>Quick Start</h2>
+          <ol>
+            <li>Click <b>Create account</b> and register.</li>
+            <li>Open <b>User Catalog</b> to browse and filter users.</li>
+            <li>Go to <b>Matching</b>, generate matches, and tap <b>Like</b>.</li>
+            <li>When two users like each other (in demo, use two accounts), you can <b>Chat</b>.</li>
+          </ol>
+          <p class="small">Tip: Use your browser’s “New Private Window” to sign in as a second user for matching/chat demos.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-register" class="view hidden">
+      <div class="card">
+        <h1>Create Account</h1>
+        <form id="formRegister" class="grid two">
+          <div><label>Name<input required name="name"/></label></div>
+          <div><label>Email<input required name="email" type="email"/></label></div>
+          <div><label>Password<input required name="password" type="password" minlength="4"/></label></div>
+          <div><label>Age<input required name="age" type="number" min="18" max="99"/></label></div>
+          <div><label>Gender
+            <select required name="gender">
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="other">Other</option>
+            </select>
+          </label></div>
+          <div><label>Interests (comma separated)<input name="interests" placeholder="hiking, jazz, cooking"/></label></div>
+          <div class="grid two">
+            <div><label>City<input name="city" placeholder="Sydney"/></label></div>
+            <div><label>Bio<textarea name="bio" rows="2" placeholder="Short intro"></textarea></label></div>
+          </div>
+          <button type="submit">Sign up</button>
+          <button type="button" class="ghost" onclick="router.go('#login')">I have an account</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="view-login" class="view hidden">
+      <div class="card">
+        <h1>Login</h1>
+        <form id="formLogin" class="grid two">
+          <div><label>Email<input required name="email" type="email"/></label></div>
+          <div><label>Password<input required name="password" type="password"/></label></div>
+          <button type="submit">Login</button>
+          <button type="button" class="ghost" onclick="logout()">Logout</button>
+        </form>
+        <p class="small" id="loginStatus"></p>
+      </div>
+    </section>
+
+    <section id="view-catalog" class="view hidden">
+      <div class="card">
+        <h1>User Catalog</h1>
+        <div class="grid three card">
+          <div><label>Gender
+            <select id="fGender">
+              <option value="">Any</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="other">Other</option>
+            </select>
+          </label></div>
+          <div><label>Min Age<input id="fMinAge" type="number" min="18" value="18"/></label></div>
+          <div><label>Max Age<input id="fMaxAge" type="number" max="99" value="99"/></label></div>
+          <div style="grid-column:1/-1"><label>Interests contains<input id="fInterests" placeholder="jazz"/></label></div>
+          <div style="grid-column:1/-1"><button onclick="renderCatalog()">Apply filters</button> <button class="secondary" onclick="clearFilters()">Reset</button></div>
+        </div>
+        <div id="catalogList" class="grid two"></div>
+      </div>
+    </section>
+
+    <section id="view-match" class="view hidden">
+      <div class="card">
+        <h1>Matching</h1>
+        <p>We compute a simple score based on shared interests and proximity in age. This is a demo algorithm for coursework.</p>
+        <button onclick="computeMatches()">Find my matches</button>
+        <div id="matchList" class="grid two"></div>
+      </div>
+    </section>
+
+    <section id="view-chat" class="view hidden">
+      <div class="card">
+        <h1>Live Chat (Demo)</h1>
+        <p class="small">In this offline prototype, chat is local to your browser. For a real service you’d connect to a backend (e.g., WebSocket). A playful bot simulates replies.</p>
+        <div class="grid two">
+          <div class="card">
+            <h2>My Matches</h2>
+            <div id="chatMatches"></div>
+          </div>
+          <div class="card">
+            <h2 id="chatWith">Select a match to chat</h2>
+            <div id="messages" style="height:320px;overflow:auto;border:1px solid #1f2937;border-radius:12px;padding:8px;background:#0b1220"></div>
+            <div class="grid two">
+              <input id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMessage()"/>
+              <button onclick="sendMessage()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-feedback" class="view hidden">
+      <div class="card">
+        <h1>Feedback & Reviews</h1>
+        <form id="formFeedback" class="grid two">
+          <div><label>For user (email)<input name="forEmail" type="email" required/></label></div>
+          <div><label>Rating<select name="rating">
+            <option>5</option><option>4</option><option>3</option><option>2</option><option>1</option>
+          </select></label></div>
+          <div style="grid-column:1/-1"><label>Comments<textarea name="comment" rows="3" required></textarea></label></div>
+          <button type="submit">Submit review</button>
+        </form>
+        <h2>Recent Reviews</h2>
+        <div id="reviewsList"></div>
+      </div>
+    </section>
+
+    <section id="view-about" class="view hidden">
+      <div class="card">
+        <h1>About LoveLink</h1>
+        <p>LoveLink helps people meet others who share similar interests, hobbies, and values, with a focus on safety and simple UX. This is a student-built prototype using Agile/Scrum ideas.</p>
+        <ul>
+          <li><span class="badge">Better Matching</span> via shared interests</li>
+          <li><span class="badge">Safety & Privacy</span> – demo data stays in your browser</li>
+          <li><span class="badge">Simple UX</span> and accessible design</li>
+          <li><span class="badge">Scalable (future)</span> – ready to connect to real APIs</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="view-contact" class="view hidden">
+      <div class="card">
+        <h1>Contact Us</h1>
+        <form id="formContact" class="grid two">
+          <div><label>Your email<input name="email" type="email" required/></label></div>
+          <div><label>Topic<select name="topic"><option>General</option><option>Safety</option><option>Account</option></select></label></div>
+          <div style="grid-column:1/-1"><label>Message<textarea name="message" rows="3" required></textarea></label></div>
+          <button type="submit">Send</button>
+        </form>
+        <div id="contactList" class="small"></div>
+      </div>
+    </section>
+
+    <div class="toast hidden" id="toast"></div>
+  </main>
+
+  <footer>
+    <div class="container small">
+      <b>LoveLink Prototype</b> · Built for coursework · © 2025 · Demo data stored locally
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+
+/* Minimal, clean styling—no external dependencies */
+:root{
+  --bg:#0f172a; /* slate-900 */
+  --panel:#111827; /* gray-900 */
+  --muted:#334155; /* slate-700 */
+  --text:#e5e7eb; /* gray-200 */
+  --accent:#22c55e; /* green-500 */
+  --accent-2:#14b8a6; /* teal-500 */
+  --danger:#ef4444; /* red-500 */
+  --warn:#f59e0b; /* amber-500 */
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+a{color:var(--accent-2);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:1100px;margin:0 auto;padding:24px}
+nav{position:sticky;top:0;background:rgba(17,24,39,.85);backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid #1f2937;z-index:50}
+nav .inner{display:flex;align-items:center;gap:16px;padding:12px 24px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.brand img{width:28px;height:28px;border-radius:8px}
+nav .links{display:flex;flex-wrap:wrap;gap:12px;margin-left:auto}
+nav .links a{padding:8px 12px;border-radius:999px;background:#0b1220;border:1px solid #1f2937}
+nav .links a.active{border-color:var(--accent);color:#d1fae5}
+h1,h2{margin:12px 0 10px}
+h1{font-size:28px}
+h2{font-size:22px;color:#cbd5e1}
+p{line-height:1.6}
+.card{background:linear-gradient(180deg,#0b1220,#0b1220);border:1px solid #1f2937;border-radius:14px;padding:16px;margin:12px 0}
+.grid{display:grid;gap:16px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.grid.two,.grid.three{grid-template-columns:1fr}}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #1f2937;background:#0b1220;color:#e5e7eb}
+button{padding:10px 14px;border-radius:10px;border:1px solid #1f2937;background:var(--accent);color:#062;cursor:pointer;font-weight:600}
+button.secondary{background:#0b1220;color:#d1d5db;border-color:#374151}
+button.ghost{background:transparent;border-color:#374151;color:#9ca3af}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#0b1220;border:1px solid #374151;color:#cbd5e1;font-size:12px}
+.kbd{border:1px solid #374151;border-bottom-width:3px;padding:2px 6px;border-radius:6px;background:#0b1220;font-family:ui-monospace,monospace;font-size:12px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border-bottom:1px solid #1f2937;padding:10px;text-align:left}
+hr{border:0;border-top:1px solid #243244;margin:18px 0}
+.toast{position:fixed;bottom:18px;right:18px;background:#111827;border:1px solid #243244;padding:12px 14px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.small{font-size:12px;color:#9ca3af}
+.hidden{display:none}
+footer{padding:30px 0;color:#94a3b8;text-align:center}
